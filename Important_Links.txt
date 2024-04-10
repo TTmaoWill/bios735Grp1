@@ -12,3 +12,6 @@ Important Links:
 
 4. Google Drive folder of all shared documents
 	https://drive.google.com/drive/folders/1jvWPSFGHd3stk4kYD1LwBk-Oaw8quobb?usp=share_link
+
+5. Kaggle link to phishing dataset:
+	https://www.kaggle.com/datasets/danielfernandon/web-page-phishing-dataset
