@@ -1,0 +1,14 @@
+
+Important Links:
+
+1. Final Project Proposal
+	https://docs.google.com/document/d/1pJaXmT_5mw2p8QmN6TMTPlUR23A-nvFC-XNEzJ1GqSE/edit?usp=sharing
+
+2. Final Presentation Google Slides link
+	https://docs.google.com/presentation/d/1Kqol7Q-fTQsEhbrt9ZIyuWvqSe1O3kqIz4KqFDWWq1A/edit?usp=sharing
+
+3. Github Link to Project Repository and Package (`phishing` subdirectory)
+	https://github.com/TTmaoWill/bios735Grp1
+
+4. Google Drive folder of all shared documents
+	https://drive.google.com/drive/folders/1jvWPSFGHd3stk4kYD1LwBk-Oaw8quobb?usp=share_link
