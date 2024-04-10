@@ -8,9 +8,9 @@ Authors@R:
            comment = c(ONYEN = "chenweit"))
     person("Xuejun", "Sun", , "xuejun_sun@unc.edu", role = c("aut", "cre"),
            comment = c(ONYEN = "xuejun1"))
-    person("Sophie Shan", "Raman", , "sophshan@unc.edu", role = c("aut", "cre"),
+    person("Sophie ", "Shan", , "sophshan@unc.edu", role = c("aut", "cre"),
            comment = c(ONYEN = "madhurir"))
-    person("Jiawen Du", "Raman", , "jiawen15@email.unc.edu", role = c("aut", "cre"),
+    person("Jiawen ", "Du", , "jiawen15@email.unc.edu", role = c("aut", "cre"),
            comment = c(ONYEN = "madhurir"))
 Description: Webpage Phishing final project for BIOS 735 Group 1.
 License: `use_gpl3_license()`

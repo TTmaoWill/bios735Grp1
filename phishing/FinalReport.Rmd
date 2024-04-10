@@ -1,0 +1,39 @@
+---
+title: "BIOS 735 Final Project"
+author: "Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du"
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: yes
+subtitle: Group 1
+---
+
+```{r}
+# TODO:
+# Madhuri: - Still need to set up report framework
+#          - not sure if we should knit to html or pdf
+
+```
+
+```{r}
+
+
+
+```
+
+```{r}
+
+
+
+```
+
+```{r}
+
+
+
+```
