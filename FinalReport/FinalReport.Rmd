@@ -3,8 +3,6 @@ title: "BIOS 735 Final Project"
 author: "Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     theme: cosmo
     toc: yes
@@ -15,21 +13,39 @@ subtitle: Group 1
 
 # Introduction
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
 ## Motivation
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
 
 ## Background info /description of data set
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
 ## EDA
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
 
 ### What data it contains, size, etc
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
 ### Missingness?
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
 
 ### Visualize distributions, correlations, outliers
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
 #### Histograms, corrplots, PCA
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
 ### Discuss Sparsity of features
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
 
 
 ```{r}
