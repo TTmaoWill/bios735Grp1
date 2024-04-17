@@ -13,6 +13,25 @@ output:
 subtitle: Group 1
 ---
 
+# Introduction
+
+## Motivation
+
+## Background info /description of data set
+
+## EDA
+
+### What data it contains, size, etc
+
+### Missingness?
+
+### Visualize distributions, correlations, outliers
+
+#### Histograms, corrplots, PCA
+
+### Discuss Sparsity of features
+
+
 ```{r}
 # TODO:
 # Madhuri: - Still need to set up report framework
@@ -20,11 +39,7 @@ subtitle: Group 1
 
 ```
 
-```{r}
-
-
-
-```
+# Logistic Regression with Mini-Batch SGD
 
 ```{r}
 
@@ -32,8 +47,26 @@ subtitle: Group 1
 
 ```
 
+# Machine Learning approaches
 ```{r}
 
 
 
 ```
+
+# Final predictions on test set (to "choose" best model)
+
+```{r}
+
+
+
+```
+
+# Conclusion
+
+## General thoughts
+
+## Limitations of this project
+
+## Future work
+
