@@ -1605,11 +1605,86 @@ sollicitudin, hendrerit augue ac, semper tortor.</p>
 <pre class="r"><code># TODO:
 # Madhuri: - Still need to set up report framework
 #          - not sure if we should knit to html or pdf</code></pre>
+<p>We first split out dataset into a training (80%) and test set (20%).
+Suppose our training set has <span class="math inline">\(n\)</span>
+datapoints. Then:</p>
+<p>Let <span class="math inline">\(Y\)</span> be the response vector:
+<span class="math display">\[ Y_i =
+\begin{cases}
+1 &amp; \text{if webpage is phishing} \\
+0 &amp; \text{if not}
+\end{cases} \quad i = 1, \ldots, n\]</span>.</p>
+<p>Let <span class="math inline">\(X^T\)</span> be the <span class="math inline">\(n\)</span> by <span class="math inline">\(p\)</span> design matrix: <span class="math display">\[ X^T =
+\begin{bmatrix}
+x_{11} &amp; \cdots &amp; x_{1p} \\
+x_{21} &amp; \cdots &amp; x_{2p} \\
+\vdots &amp; \ddots &amp; \vdots \\
+x_{n1} &amp; \cdots &amp; x_{np} \\
+\end{bmatrix}
+\]</span></p>
 </div>
 </div>
+</div>
+<div id="generalized-linear-model" class="section level1">
+<h1>Generalized Linear Model</h1>
+<p>Let <span class="math inline">\(p = P(Y=1|X)\)</span>. Since our
+response variable is binary, we fit a logistic model on the dataset. We
+use the logit link.</p>
+<p><span class="math display">\[logit(p) = log(\frac{p}{1-p}) =  X^T
+\beta\]</span></p>
+<p>Since this is binary data, the individual data come from a Bernoulli
+distribution. Our joint likelihood function is:</p>
+<p><span class="math display">\[L(\beta|Y, n) = \prod_{i=1}^n
+p^{I(y_i=1)} (1-p)^{I(y_i=0)}\]</span></p>
+<p>The log-likelihood is:</p>
+<p><span class="math display">\[\begin{align}
+l(\beta|Y, n) &amp;= \sum_{i=1}^n I(y_i=1) log(p) + I(y_i=0) log(1-p) \\
+&amp;= \sum_{i=1}^n y_i log(p) + (1-y_i) log(1-p)
+\end{align}\]</span></p>
 </div>
 <div id="logistic-regression-with-mini-batch-sgd" class="section level1">
 <h1>Logistic Regression with Mini-Batch SGD</h1>
+<p>We chose to use mini-batch stochastic gradient descent to find the
+solution for <span class="math inline">\(\beta\)</span>. This decision
+was based on the principle that maximizing the log-likelihood function
+is analogous to minimizing its negative counterpart. Therefore, we
+define our cost function as <span class="math inline">\(J(\beta) =
+-l(\beta \mid Y, n)\)</span>. The algorithm proceeds as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Initialize the estimate for <span class="math inline">\(\beta\)</span>.</li>
+<li>At each iteration, select a mini-batch of size <span class="math inline">\(\alpha\)</span> from <span class="math inline">\(X^T\)</span>, denoted <span class="math inline">\(\{x_{i.}\}\)</span>, where <span class="math inline">\(i\)</span> indexes the randomly selected
+rows.</li>
+<li>Calculate the gradient of the log-likelihood, <span class="math inline">\(\nabla J(\beta)\)</span>, using the mini-batch
+sample.</li>
+<li>Update <span class="math inline">\(\beta\)</span> according to the
+rule: <span class="math inline">\(\beta_{\text{new}} =
+\beta_{\text{old}} - \eta \nabla J(\beta)\)</span>, where <span class="math inline">\(\eta\)</span> is the learning rate.</li>
+<li>Repeat steps 2-4 until convergence, defined as <span class="math inline">\(|\beta_{\text{new}} - \beta_{\text{old}}| &lt;
+\epsilon\)</span>, where <span class="math inline">\(\epsilon\)</span>
+is a pre-specified threshold.</li>
+</ol>
+<p>The gradient of the log-likelihood for our model is detailed below
+(for full derivation, please see the ):</p>
+<p><span class="math display">\[\nabla J(\beta)^T = [ \frac{\partial
+J(\beta)}{\partial \beta_1} \ldots \frac{\partial J(\beta)}{\partial
+\beta_p} ] \]</span></p>
+<p><span class="math display">\[\begin{align}
+\frac{\partial J(\beta)}{\partial \beta_j} &amp;= \frac{\partial
+J(\beta)}{\partial p} \cdot \frac{\partial p}{\partial \beta_j} \\
+&amp;= \sum_{i=1}^n - \left(\frac{y_i}{p} + \frac{1-y_i}{1-p}\right)
+\cdot p(1-p) x_j \\
+&amp;= \sum_{i=1}^n (-y_i(1-p) + (1-y_i)p) x_j \\
+&amp;= \sum_{i=1}^n (p - y_i) x_j
+\end{align}\]</span></p>
+<p>We initialized <span class="math inline">\(\beta\)</span> as the zero
+vector at the start of the algorithm and continued iterations until
+convergence. Convergence was defined by the condition <span class="math inline">\(\left| \beta_{\text{new}} - \beta_{\text{old}}
+\right| &lt; \epsilon\)</span>, where <span class="math inline">\(\epsilon = 0.001\)</span>.</p>
+<p>We optimized both the mini-batch size (<span class="math inline">\(\alpha\)</span>) and the learning rate (<span class="math inline">\(\eta\)</span>), selecting the best hyperparameters
+based on convergence speed and Mean Squared Error (MSE). Here, MSE was
+calculated as the squared differences between the parameter estimates
+obtained by our method and those provided by the General Linear Model
+(GLM) function in the package in R.</p>
 </div>
 <div id="machine-learning-approaches" class="section level1">
 <h1>Machine Learning approaches</h1>
@@ -1627,6 +1702,45 @@ sollicitudin, hendrerit augue ac, semper tortor.</p>
 </div>
 <div id="future-work" class="section level2">
 <h2>Future work</h2>
+</div>
+<div id="appendix-a" class="section level2">
+<h2>Appendix A</h2>
+<p>Expressing the logit function <span class="math inline">\(logit(p)\)</span> in terms of <span class="math inline">\(p\)</span>: <span class="math display">\[logit(p)
+= \log\left(\frac{p}{1-p}\right) = X^T\beta\]</span></p>
+<p>This equation can be rewritten to solve for <span class="math inline">\(p\)</span>: <span class="math display">\[\frac{p}{1-p} = \exp(X^T\beta)\]</span></p>
+<p>Multiplying both sides by <span class="math inline">\(1-p\)</span>
+gives: <span class="math display">\[p = (1-p) \exp(X^T
+\beta)\]</span></p>
+<p>Expanding and rearranging terms to isolate <span class="math inline">\(p\)</span> on one side: <span class="math display">\[\begin{align*}
+p &amp;= \exp(X^T \beta) - p \exp(X^T \beta) \\
+p + p \exp(X^T \beta) &amp;= \exp(X^T \beta) \\
+p(1 + \exp(X^T \beta)) &amp;= \exp(X^T \beta)
+\end{align*}\]</span></p>
+<p>Solving for <span class="math inline">\(p\)</span>: <span class="math display">\[p = \frac{\exp(X^T \beta)}{1 + \exp(X^T
+\beta)}\]</span></p>
+<p>By factoring out <span class="math inline">\(\exp(X^T \beta)\)</span>
+in the denominator, the expression simplifies further: <span class="math display">\[p = \frac{1}{1 + \exp(-X^T \beta)}\]</span></p>
+</div>
+<div id="appendix-b" class="section level2">
+<h2>Appendix B</h2>
+<p>Here are the calculations for the partial derivatives required for
+the gradient function:</p>
+<p><span class="math display">\[\begin{align}
+\frac{\partial J(\beta)}{\partial p}
+&amp;= \frac{\partial}{\partial p} - \sum_{i=1}^n y_i log(p) + (1-y_i)
+log(1-p)\\
+&amp;= \sum_{i=1}^n - \frac{y_i}{p} + \frac{(1-y_i)}{1-p}
+\end{align}\]</span></p>
+<p><span class="math display">\[\begin{align}
+\frac{\partial p}{\partial \beta_j} &amp;= \frac{\partial p}{\partial
+\beta_j}  (1 + \exp(-X^T \beta))^{-1} \\
+&amp;= exp(-X^T \beta) (1+ exp(-X^T \beta))^{-2} x_j \\
+&amp;=  \frac{(1+exp(-X^T \beta))-1}{(1+ exp(-X^T \beta)) (1+ exp(-X^T
+\beta))} x_j \\
+&amp;=  \frac{1}{(1+ exp(-X^T \beta))} (1 - \frac{1}{(1+ exp(-X^T
+\beta))})x_j \\
+&amp;=  p (1-p)x_j
+\end{align}\]</span></p>
 </div>
 </div>
 
