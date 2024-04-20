@@ -1614,12 +1614,12 @@ datapoints. Then:</p>
 1 &amp; \text{if webpage is phishing} \\
 0 &amp; \text{if not}
 \end{cases} \quad i = 1, \ldots, n\]</span>.</p>
-<p>Let <span class="math inline">\(X^T\)</span> be the <span class="math inline">\(n\)</span> by <span class="math inline">\(p\)</span> design matrix: <span class="math display">\[ X^T =
+<p>Let <span class="math inline">\(X^T\)</span> be the <span class="math inline">\(n\)</span> by <span class="math inline">\(px1\)</span> design matrix: <span class="math display">\[ X^T =
 \begin{bmatrix}
-x_{11} &amp; \cdots &amp; x_{1p} \\
-x_{21} &amp; \cdots &amp; x_{2p} \\
+1 &amp; x_{11} &amp; \cdots &amp; x_{1p} \\
+1 &amp; x_{21} &amp; \cdots &amp; x_{2p} \\
 \vdots &amp; \ddots &amp; \vdots \\
-x_{n1} &amp; \cdots &amp; x_{np} \\
+1 &amp; x_{n1} &amp; \cdots &amp; x_{np} \\
 \end{bmatrix}
 \]</span></p>
 </div>
@@ -1668,7 +1668,7 @@ is a pre-specified threshold.</li>
 <p>The gradient of the log-likelihood for our model is detailed below
 (for full derivation, please see the <span class="math inline">\(\textbf{Appendix B}\)</span>):</p>
 <p><span class="math display">\[\nabla J(\beta)^T = [ \frac{\partial
-J(\beta)}{\partial \beta_1} \ldots \frac{\partial J(\beta)}{\partial
+J(\beta)}{\partial \beta_0} \ldots \frac{\partial J(\beta)}{\partial
 \beta_p} ] = \mathbf{X^T}(\mathbf{p}-\mathbf{y})\]</span></p>
 <p><span class="math display">\[\begin{align}
 \frac{\partial J(\beta)}{\partial \beta_j} &amp;= \frac{\partial

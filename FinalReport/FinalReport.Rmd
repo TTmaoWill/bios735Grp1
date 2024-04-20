@@ -65,13 +65,13 @@ $$ Y_i =
 0 & \text{if not} 
 \end{cases} \quad i = 1, \ldots, n$$. 
 
-\noindent Let $X^T$ be the $n$ by $p$ design matrix: 
+\noindent Let $X^T$ be the $n$ by $px1$ design matrix: 
 \[ X^T = 
 \begin{bmatrix}
-x_{11} & \cdots & x_{1p} \\
-x_{21} & \cdots & x_{2p} \\
+1 & x_{11} & \cdots & x_{1p} \\
+1 & x_{21} & \cdots & x_{2p} \\
 \vdots & \ddots & \vdots \\
-x_{n1} & \cdots & x_{np} \\
+1 & x_{n1} & \cdots & x_{np} \\
 \end{bmatrix}
 \]
 
@@ -106,7 +106,7 @@ We chose to use mini-batch stochastic gradient descent to find the solution for 
 
 \noindent The gradient of the log-likelihood for our model is detailed below (for full derivation, please see the $\textbf{Appendix B}$):
 
-$$\nabla J(\beta)^T = [ \frac{\partial J(\beta)}{\partial \beta_1} \ldots \frac{\partial J(\beta)}{\partial \beta_p} ] = \mathbf{X^T}(\mathbf{p}-\mathbf{y})$$
+$$\nabla J(\beta)^T = [ \frac{\partial J(\beta)}{\partial \beta_0} \ldots \frac{\partial J(\beta)}{\partial \beta_p} ] = \mathbf{X^T}(\mathbf{p}-\mathbf{y})$$
 
 \begin{align}
 \frac{\partial J(\beta)}{\partial \beta_j} &= \frac{\partial J(\beta)}{\partial p_i} \cdot \frac{\partial p_i}{\partial \beta_j} \\
