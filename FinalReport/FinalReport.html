@@ -11,7 +11,7 @@
 
 <meta name="author" content="Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du" />
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-20" />
 
 <title>BIOS 735 Final Project</title>
 
@@ -1501,7 +1501,7 @@ border-radius: 0px;
 <h3 class="subtitle">Group 1</h3>
 <h4 class="author">Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan,
 Jiawen Du</h4>
-<h4 class="date">04/17/2024</h4>
+<h4 class="date">04/20/2024</h4>
 
 </div>
 
@@ -1630,16 +1630,18 @@ x_{n1} &amp; \cdots &amp; x_{np} \\
 <p>Let <span class="math inline">\(p = P(Y=1|X)\)</span>. Since our
 response variable is binary, we fit a logistic model on the dataset. We
 use the logit link.</p>
-<p><span class="math display">\[logit(p) = log(\frac{p}{1-p}) =  X^T
+<p><span class="math display">\[logit(p_i) = log(\frac{p_i}{1-p_i})
+=  \beta_0 + \beta_1x_{i1} + \dots + \beta_px_{ip} = \mathbf{x_i^T}
 \beta\]</span></p>
 <p>Since this is binary data, the individual data come from a Bernoulli
 distribution. Our joint likelihood function is:</p>
 <p><span class="math display">\[L(\beta|Y, n) = \prod_{i=1}^n
-p^{I(y_i=1)} (1-p)^{I(y_i=0)}\]</span></p>
+p_i^{I(y_i=1)} (1-p_i)^{I(y_i=0)}\]</span></p>
 <p>The log-likelihood is:</p>
 <p><span class="math display">\[\begin{align}
-l(\beta|Y, n) &amp;= \sum_{i=1}^n I(y_i=1) log(p) + I(y_i=0) log(1-p) \\
-&amp;= \sum_{i=1}^n y_i log(p) + (1-y_i) log(1-p)
+l(\beta|Y, n) &amp;= \sum_{i=1}^n I(y_i=1) log(p_i) + I(y_i=0)
+log(1-p_i) \\
+&amp;= \sum_{i=1}^n y_i log(p_i) + (1-y_i) log(1-p_i)
 \end{align}\]</span></p>
 </div>
 <div id="logistic-regression-with-mini-batch-sgd" class="section level1">
@@ -1652,7 +1654,7 @@ define our cost function as <span class="math inline">\(J(\beta) =
 -l(\beta \mid Y, n)\)</span>. The algorithm proceeds as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Initialize the estimate for <span class="math inline">\(\beta\)</span>.</li>
-<li>At each iteration, select a mini-batch of size <span class="math inline">\(\alpha\)</span> from <span class="math inline">\(X^T\)</span>, denoted <span class="math inline">\(\{x_{i.}\}\)</span>, where <span class="math inline">\(i\)</span> indexes the randomly selected
+<li>At each iteration, select a mini-batch of size <span class="math inline">\(\alpha\)</span> from <span class="math inline">\(X^T\)</span>, denoted <span class="math inline">\(\{\mathbf{x_i^T}\}\)</span>, where <span class="math inline">\(i\)</span> indexes the randomly selected
 rows.</li>
 <li>Calculate the gradient of the log-likelihood, <span class="math inline">\(\nabla J(\beta)\)</span>, using the mini-batch
 sample.</li>
@@ -1664,17 +1666,17 @@ rule: <span class="math inline">\(\beta_{\text{new}} =
 is a pre-specified threshold.</li>
 </ol>
 <p>The gradient of the log-likelihood for our model is detailed below
-(for full derivation, please see the ):</p>
+(for full derivation, please see the <span class="math inline">\(\textbf{Appendix B}\)</span>):</p>
 <p><span class="math display">\[\nabla J(\beta)^T = [ \frac{\partial
 J(\beta)}{\partial \beta_1} \ldots \frac{\partial J(\beta)}{\partial
-\beta_p} ] \]</span></p>
+\beta_p} ] = \mathbf{X^T}(\mathbf{p}-\mathbf{y})\]</span></p>
 <p><span class="math display">\[\begin{align}
 \frac{\partial J(\beta)}{\partial \beta_j} &amp;= \frac{\partial
-J(\beta)}{\partial p} \cdot \frac{\partial p}{\partial \beta_j} \\
-&amp;= \sum_{i=1}^n - \left(\frac{y_i}{p} + \frac{1-y_i}{1-p}\right)
-\cdot p(1-p) x_j \\
-&amp;= \sum_{i=1}^n (-y_i(1-p) + (1-y_i)p) x_j \\
-&amp;= \sum_{i=1}^n (p - y_i) x_j
+J(\beta)}{\partial p_i} \cdot \frac{\partial p_i}{\partial \beta_j} \\
+&amp;= \sum_{i=1}^n - \left(\frac{y_i}{p_i} + \frac{1-y_i}{1-p_i}\right)
+\cdot p_i(1-p_i) x_{ij} \\
+&amp;= \sum_{i=1}^n (-y_i(1-p_i) + (1-y_i)p_i) x_{ij} \\
+&amp;= \sum_{i=1}^n (p_i - y_i) x_{ij}
 \end{align}\]</span></p>
 <p>We initialized <span class="math inline">\(\beta\)</span> as the zero
 vector at the start of the algorithm and continued iterations until
@@ -1705,41 +1707,44 @@ obtained by our method and those provided by the General Linear Model
 </div>
 <div id="appendix-a" class="section level2">
 <h2>Appendix A</h2>
-<p>Expressing the logit function <span class="math inline">\(logit(p)\)</span> in terms of <span class="math inline">\(p\)</span>: <span class="math display">\[logit(p)
-= \log\left(\frac{p}{1-p}\right) = X^T\beta\]</span></p>
-<p>This equation can be rewritten to solve for <span class="math inline">\(p\)</span>: <span class="math display">\[\frac{p}{1-p} = \exp(X^T\beta)\]</span></p>
-<p>Multiplying both sides by <span class="math inline">\(1-p\)</span>
-gives: <span class="math display">\[p = (1-p) \exp(X^T
-\beta)\]</span></p>
-<p>Expanding and rearranging terms to isolate <span class="math inline">\(p\)</span> on one side: <span class="math display">\[\begin{align*}
-p &amp;= \exp(X^T \beta) - p \exp(X^T \beta) \\
-p + p \exp(X^T \beta) &amp;= \exp(X^T \beta) \\
-p(1 + \exp(X^T \beta)) &amp;= \exp(X^T \beta)
+<p>Expressing the logit function <span class="math inline">\(logit(p_i)\)</span> in terms of <span class="math inline">\(p_i\)</span>: <span class="math display">\[logit(p_i) = \log\left(\frac{p_i}{1-p_i}\right) =
+\mathbf{x_i^T}\beta\]</span></p>
+<p>This equation can be rewritten to solve for <span class="math inline">\(p_i\)</span>: <span class="math display">\[\frac{p_i}{1-p_i} =
+\exp(\mathbf{x_i^T}\beta)\]</span></p>
+<p>Multiplying both sides by <span class="math inline">\(1-p_i\)</span>
+gives: <span class="math display">\[p_i = (1-p_i)
+\exp(\mathbf{x_i^T}\beta)\]</span></p>
+<p>Expanding and rearranging terms to isolate <span class="math inline">\(p_i\)</span> on one side: <span class="math display">\[\begin{align*}
+p_i &amp;= \exp(\mathbf{x_i^T}\beta) - p_i \exp(\mathbf{x_i^T}\beta) \\
+p_i + p_i \exp(\mathbf{x_i^T}\beta) &amp;= \exp(\mathbf{x_i^T}\beta) \\
+p_i(1 + \exp(\mathbf{x_i^T}\beta)) &amp;= \exp(\mathbf{x_i^T}\beta)
 \end{align*}\]</span></p>
-<p>Solving for <span class="math inline">\(p\)</span>: <span class="math display">\[p = \frac{\exp(X^T \beta)}{1 + \exp(X^T
-\beta)}\]</span></p>
-<p>By factoring out <span class="math inline">\(\exp(X^T \beta)\)</span>
-in the denominator, the expression simplifies further: <span class="math display">\[p = \frac{1}{1 + \exp(-X^T \beta)}\]</span></p>
+<p>Solving for <span class="math inline">\(p_i\)</span>: <span class="math display">\[p_i = \frac{\exp(\mathbf{x_i^T}\beta)}{1 +
+\exp(\mathbf{x_i^T}\beta)}\]</span></p>
+<p>By factoring out <span class="math inline">\(\exp(\mathbf{x_i^T}\beta)\)</span> in the
+denominator, the expression simplifies further: <span class="math display">\[p_i = \frac{1}{1 +
+\exp(-\mathbf{x_i^T}\beta)}\]</span></p>
 </div>
 <div id="appendix-b" class="section level2">
 <h2>Appendix B</h2>
 <p>Here are the calculations for the partial derivatives required for
 the gradient function:</p>
 <p><span class="math display">\[\begin{align}
-\frac{\partial J(\beta)}{\partial p}
-&amp;= \frac{\partial}{\partial p} - \sum_{i=1}^n y_i log(p) + (1-y_i)
-log(1-p)\\
-&amp;= \sum_{i=1}^n - \frac{y_i}{p} + \frac{(1-y_i)}{1-p}
+\frac{\partial J(\beta)}{\partial p_i}
+&amp;= \frac{\partial}{\partial p_i} - \sum_{i=1}^n y_i log(p_i) +
+(1-y_i) log(1-p_i)\\
+&amp;= \sum_{i=1}^n - \frac{y_i}{p_i} + \frac{(1-y_i)}{1-p_i}
 \end{align}\]</span></p>
 <p><span class="math display">\[\begin{align}
-\frac{\partial p}{\partial \beta_j} &amp;= \frac{\partial p}{\partial
-\beta_j}  (1 + \exp(-X^T \beta))^{-1} \\
-&amp;= exp(-X^T \beta) (1+ exp(-X^T \beta))^{-2} x_j \\
-&amp;=  \frac{(1+exp(-X^T \beta))-1}{(1+ exp(-X^T \beta)) (1+ exp(-X^T
-\beta))} x_j \\
-&amp;=  \frac{1}{(1+ exp(-X^T \beta))} (1 - \frac{1}{(1+ exp(-X^T
-\beta))})x_j \\
-&amp;=  p (1-p)x_j
+\frac{\partial p_i}{\partial \beta_j} &amp;= \frac{\partial
+p_i}{\partial \beta_j}  (1 + \exp(-\mathbf{x_i^T} \beta))^{-1} \\
+&amp;= exp(-\mathbf{x_i^T} \beta) (1+ exp(-\mathbf{x_i^T}\beta))^{-2}
+x_{ij} \\
+&amp;=  \frac{(1+exp(-\mathbf{x_i^T}\beta))-1}{(1+
+exp(-\mathbf{x_i^T}\beta)) (1+ exp(-\mathbf{x_i^T}\beta))} x_{ij} \\
+&amp;=  \frac{1}{(1+ exp(-\mathbf{x_i^T}\beta))} (1 - \frac{1}{(1+
+exp(-\mathbf{x_i^T}\beta))}) x_{ij} \\
+&amp;=  p_i (1-p_i) x_{ij}
 \end{align}\]</span></p>
 </div>
 </div>
