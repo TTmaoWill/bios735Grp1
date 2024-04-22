@@ -11,7 +11,7 @@
 
 <meta name="author" content="Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du" />
 
-<meta name="date" content="2024-04-20" />
+<meta name="date" content="2024-04-22" />
 
 <title>BIOS 735 Final Project</title>
 
@@ -1501,23 +1501,63 @@ border-radius: 0px;
 <h3 class="subtitle">Group 1</h3>
 <h4 class="author">Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan,
 Jiawen Du</h4>
-<h4 class="date">04/20/2024</h4>
+<h4 class="date">04/22/2024</h4>
 
 </div>
 
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
-iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
-Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor
-pellentesque quis non arcu. Proin tincidunt libero vitae tellus
-vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
-nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
-sollicitudin, hendrerit augue ac, semper tortor.</p>
+<p>In the digital age, phishing is a common practice in which
+cybercriminals attempt to steal sensitive, personal information from
+users, such as their usernames/passwords, social-security number, credit
+card information, etc. Phishing can occur in many different forms, but
+one common way is through websites. You have probably received
+suspicious emails before from unknown senders. These emails usually
+contain phrases to bait your interest and may contain a link to a
+website that sounds interesting, but really is just collecting your
+personal information. We want to avoid clicking on phishing links, while
+also not missing out on important non-phishing links that we need to
+access.</p>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
+<p>The goal of this project is to be able to predict whether or not a
+website link is a phishing website or not, based on only features of the
+URL. If we ever receive an email with a link from an unknown sender, but
+we aren’t sure if it is suspicious, we hope that this data analysis can:
+1. Predict whether the URL is phishing or not, and 2. Provide insight
+into what features of the URL are most important to look out for when
+judging whether the link is phishing or not.</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>In order to achieve these goals, we work with a data set from Kaggle
+(linked <a href="https://www.kaggle.com/datasets/danielfernandon/web-page-phishing-dataset">here</a>)
+which contains 100,007 website URLs, 19 features of these URLs, and an
+indicator (0 or 1) of whether the URL is a phishing website or not. The
+19 features are characteristics of each URL and includes:</p>
+<ul>
+<li>url length</li>
+<li>number of dots in the URL</li>
+<li>number of hyphens in the URL</li>
+<li>number of underlines in the URL</li>
+<li>number of “+” characters in the URL</li>
+<li>number of redirections (number of times the URL redirects you to
+another website)</li>
+</ul>
+<p>etc.</p>
+<div id="eda" class="section level3">
+<h3>EDA</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
+iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
+Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor
+pellentesque quis non arcu. Proin tincidunt libero vitae tellus
+vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
+nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
+sollicitudin, hendrerit augue ac, semper tortor.</p>
+<div id="what-data-it-contains-size-etc" class="section level4">
+<h4>What data it contains, size, etc</h4>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
 iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
@@ -1527,8 +1567,8 @@ vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
 nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
 sollicitudin, hendrerit augue ac, semper tortor.</p>
 </div>
-<div id="background-info-description-of-data-set" class="section level2">
-<h2>Background info /description of data set</h2>
+<div id="missingness" class="section level4">
+<h4>Missingness?</h4>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
 iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
@@ -1538,8 +1578,8 @@ vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
 nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
 sollicitudin, hendrerit augue ac, semper tortor.</p>
 </div>
-<div id="eda" class="section level2">
-<h2>EDA</h2>
+<div id="visualize-distributions-correlations-outliers" class="section level4">
+<h4>Visualize distributions, correlations, outliers</h4>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
 iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
@@ -1548,40 +1588,8 @@ pellentesque quis non arcu. Proin tincidunt libero vitae tellus
 vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
 nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
 sollicitudin, hendrerit augue ac, semper tortor.</p>
-<div id="what-data-it-contains-size-etc" class="section level3">
-<h3>What data it contains, size, etc</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
-iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
-Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor
-pellentesque quis non arcu. Proin tincidunt libero vitae tellus
-vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
-nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
-sollicitudin, hendrerit augue ac, semper tortor.</p>
-</div>
-<div id="missingness" class="section level3">
-<h3>Missingness?</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
-iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
-Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor
-pellentesque quis non arcu. Proin tincidunt libero vitae tellus
-vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
-nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
-sollicitudin, hendrerit augue ac, semper tortor.</p>
-</div>
-<div id="visualize-distributions-correlations-outliers" class="section level3">
-<h3>Visualize distributions, correlations, outliers</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
-iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
-Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor
-pellentesque quis non arcu. Proin tincidunt libero vitae tellus
-vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
-nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
-sollicitudin, hendrerit augue ac, semper tortor.</p>
-<div id="histograms-corrplots-pca" class="section level4">
-<h4>Histograms, corrplots, PCA</h4>
+<div id="histograms-corrplots-pca" class="section level5">
+<h5>Histograms, corrplots, PCA</h5>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
 iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
@@ -1592,8 +1600,8 @@ nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
 sollicitudin, hendrerit augue ac, semper tortor.</p>
 </div>
 </div>
-<div id="discuss-sparsity-of-features" class="section level3">
-<h3>Discuss Sparsity of features</h3>
+<div id="discuss-sparsity-of-features" class="section level4">
+<h4>Discuss Sparsity of features</h4>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus,
 iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus.
@@ -1602,19 +1610,24 @@ pellentesque quis non arcu. Proin tincidunt libero vitae tellus
 vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim
 nec elit vulputate maximus. Donec in tellus dui. Donec vel purus
 sollicitudin, hendrerit augue ac, semper tortor.</p>
-<pre class="r"><code># TODO:
-# Madhuri: - Still need to set up report framework
-#          - not sure if we should knit to html or pdf</code></pre>
+</div>
+<div id="preview-of-final-data" class="section level4">
+<h4>Preview of Final Data</h4>
+<pre class="r"><code>library()</code></pre>
+</div>
+</div>
+</div>
+<div id="data-splitting" class="section level2">
+<h2>Data Splitting</h2>
 <p>We first split out dataset into a training (80%) and test set (20%).
 Suppose our training set has <span class="math inline">\(n\)</span>
 datapoints. Then:</p>
-<p>Let <span class="math inline">\(Y\)</span> be the response vector:
-<span class="math display">\[ Y_i =
+<p>Let <span class="math inline">\(Y\)</span> be the <span class="math inline">\(n \times 1\)</span> response vector: <span class="math display">\[ Y_i =
 \begin{cases}
 1 &amp; \text{if webpage is phishing} \\
 0 &amp; \text{if not}
 \end{cases} \quad i = 1, \ldots, n\]</span>.</p>
-<p>Let <span class="math inline">\(X^T\)</span> be the <span class="math inline">\(n\)</span> by <span class="math inline">\(px1\)</span> design matrix: <span class="math display">\[ X^T =
+<p>Let <span class="math inline">\(X^T\)</span> be the <span class="math inline">\(n \times (p + 1)\)</span> design matrix: <span class="math display">\[ X^T =
 \begin{bmatrix}
 1 &amp; x_{11} &amp; \cdots &amp; x_{1p} \\
 1 &amp; x_{21} &amp; \cdots &amp; x_{2p} \\
@@ -1622,7 +1635,6 @@ datapoints. Then:</p>
 1 &amp; x_{n1} &amp; \cdots &amp; x_{np} \\
 \end{bmatrix}
 \]</span></p>
-</div>
 </div>
 </div>
 <div id="generalized-linear-model" class="section level1">
@@ -1705,6 +1717,9 @@ obtained by our method and those provided by the General Linear Model
 <div id="future-work" class="section level2">
 <h2>Future work</h2>
 </div>
+</div>
+<div id="apendices" class="section level1">
+<h1>Apendices</h1>
 <div id="appendix-a" class="section level2">
 <h2>Appendix A</h2>
 <p>Expressing the logit function <span class="math inline">\(logit(p_i)\)</span> in terms of <span class="math inline">\(p_i\)</span>: <span class="math display">\[logit(p_i) = \log\left(\frac{p_i}{1-p_i}\right) =
