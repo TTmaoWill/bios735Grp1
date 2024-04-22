@@ -4,7 +4,7 @@ author: "Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output:
   html_document:
-    theme: cosmo
+    theme: flatly
     toc: yes
     toc_float:
       collapsed: yes
@@ -64,7 +64,7 @@ library()
 
 ```
 
-## Data Splitting
+## Data Splitting and Setup
 
 \noindent We first split out dataset into a training (80\%) and test set (20\%). Suppose our training set has $n$ datapoints. Then: 
 
@@ -85,8 +85,18 @@ $$ Y_i =
 \end{bmatrix}
 \]
 
+We use the above framework for the following data analysis, both for the likelihood-based method and machine learning methods.
 
-# Generalized Linear Model
+# Packaging
+
+Insert info about package and functions
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+
+# Methods
+## Likelihood Approach
+### Generalized Linear Model
 
 \noindent  Let $p = P(Y=1|X)$. Since our response variable is binary, we fit a logistic  model on the dataset. We use the logit link. 
 
@@ -103,7 +113,7 @@ l(\beta|Y, n) &= \sum_{i=1}^n I(y_i=1) log(p_i) + I(y_i=0) log(1-p_i) \\
 &= \sum_{i=1}^n y_i log(p_i) + (1-y_i) log(1-p_i)
 \end{align}
 
-# Logistic Regression with Mini-Batch SGD
+### Logistic Regression with Mini-Batch SGD
 
 We chose to use mini-batch stochastic gradient descent to find the solution for \( \beta \). This decision was based on the principle that maximizing the log-likelihood function is analogous to minimizing its negative counterpart. Therefore, we define our cost function as \( J(\beta) = -l(\beta \mid Y, n) \). The algorithm proceeds as follows:
 
@@ -137,7 +147,11 @@ $$\nabla J(\beta)^T = [ \frac{\partial J(\beta)}{\partial \beta_0} \ldots \frac{
 
 ```
 
-# Machine Learning approaches
+## Machine Learning approaches
+
+### Random Forest
+
+### Support Vector Machines
 ```{r}
 
 
