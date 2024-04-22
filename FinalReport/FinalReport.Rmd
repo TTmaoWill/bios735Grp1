@@ -136,15 +136,100 @@ $$\nabla J(\beta)^T = [ \frac{\partial J(\beta)}{\partial \beta_0} \ldots \frac{
 \end{align}
 
 
-\noindent We initialized \(\beta\) as the zero vector at the start of the algorithm and continued iterations until convergence. Convergence was defined by the condition \( \left| \beta_{\text{new}} - \beta_{\text{old}} \right| < \epsilon \), where \(\epsilon = 0.001\).
+\noindent We initialized \(\beta\) as the zero vector at the start of the algorithm and continued iterations until convergence. Convergence was defined by the condition \( \left| \beta_{\text{new}} - \beta_{\text{old}} \right| < \epsilon \), where \(\epsilon = 10^{-4}\).
 
-\noindent We optimized both the mini-batch size ($\alpha$) and the learning rate ($\eta$), selecting the best hyperparameters based on convergence speed and Mean Squared Error (MSE). Here, MSE was calculated as the squared differences between the parameter estimates obtained by our method and those provided by the General Linear Model (GLM) function in the \textbf{stats} package in R. 
+\noindent First we conducted simulation for our algorithm. We generate 100k observations with 20 covariates from normal distribution. Since our our data has non-negative covariates values, we take the absolute value of all covariates. Then we generated the coefficients to be 0.5 or -0.5, and outcome is calculated by a logistic regression model with logit link. We chose a proper mini-batch size ($\alpha$) to be 128 and and the learning rate ($\eta$) to be 0.001. The algorithm converged after 962 iterations and we observed that the mean square error (MSE) between coefficients estimates by our algorithm and the coefficients estimated by GLM is only $8 * 10^{-6}$, which indicate that our algorithm can perform as well as GLM.
+
+```{r, eval=FALSE}
+library(data.table)
+library(dplyr)
+
+# Conduct simulation
+set.seed(123)
+n=1e5
+X.sim = abs(matrix(rnorm(n * 20), nrow = n, ncol = 20))
+data.sim = as.data.frame(X.sim)
+names(data.sim) = paste("X", 1:20, sep="")
+beta.sim = c(-0.5,rep(0.5,10),rep(-0.5,10))
+X.intercept.sim = cbind(1,X.sim)
+prob = exp(X.intercept.sim %*% beta.sim) / (1+ exp(X.intercept.sim %*% beta.sim))
+data.sim$y.sim = rbinom(n,1,prob)
+mean(data.sim$y.sim)
+fit.sim = glm(data = data.sim, y.sim ~.,family = "binomial")
+coef(fit.sim)
+lg.sim = LogisticRegression(data.sim$y.sim, X.sim, epsilon = 1e-4, batch_size = 128, learning_rate=1e-3, max_iter = 50000)
+cat("MSE with true beta: ",mean((lg.sim$coefficients - beta.sim)^2))
+cat("MSE with GLM estimates: ",mean((lg.sim$coefficients - coef(fit.sim))^2))
+```
+
+\noindent Further, we apply our algorithm on the phishing dataset. First we split our phishing dataset to training (80%) and testing (20%). Then we optimized both the mini-batch size ($\alpha$) and the learning rate ($\eta$), selecting the best hyperparameters based on convergence speed and Mean Squared Error (MSE) on training set. Here, MSE was calculated as the squared differences between the parameter estimates obtained by our method and those provided by the General Linear Model (GLM) function in the \textbf{stats} package in R. Based on MSE, we chose batch size = 128 and learning rate = 0.01 for our final model. 
+
+| batch size | learning rate | iteration | MSE       |
+|------------|---------------|-----------|-----------|
+| 32         | 0.01          | 14582     | 3.05294096|
+| 32         | 0.001         | 9643      | 0.19290544|
+| 32         | 0.0001        | 11364     | 1.12656500|
+| 64         | 0.01          | 15856     | 0.64438685|
+| 64         | 0.001         | 10476     | 0.36867774|
+| 64         | 0.0001        | 10829     | 1.54867577|
+| 128        | 0.01          | 9864      | 0.02094163|
+| 128        | 0.001         | 10795     | 0.65899539|
+| 128        | 0.0001        | 10415     | 1.91463586|
+| 256        | 0.01          | 9513      | 0.12832514|
+| 256        | 0.001         | 11118     | 1.00933585|
+| 256        | 0.0001        | 11120     | 2.16481173|
+
+```{r, eval=FALSE}
+# split into training and testing
+y.train = fread("derived_data/train_y.csv") %>% unlist() %>% as.vector()
+X.train = fread("derived_data/train_x.csv") %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
+y.test = fread("derived_data/test_y.csv") %>% unlist() %>% as.vector()
+X.test = fread("derived_data/test_x.csv") %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
+
+### tune parameters ###
+# fit GLM
+fit = glm(y.train ~ X.train, family="binomial")
+coef = coef(fit)
+
+# tune our hyperparameters
+set.seed(123)
+
+tune = as.data.frame(matrix(c(rep(NA,12*4)),ncol=4))
+colnames(tune) = c("batch_size","learning_rate","iteration","MSE")
+
+i=1
+set.seed(123) # for shuffle in mini batch
+for (b in c(32,64,128,256)){
+    for (lr in c(1e-2, 1e-3, 1e-4)){
+    print(i)
+    tune$batch_size[i] = b
+    tune$learning_rate[i] = lr
+    lgres = LogisticRegression(y.train,X.train, batch_size = b, learning_rate = lr, epsilon = 1e-4, max_iter = 50000)
+    tune$iteration[i] <- lgres$iter
+    print(lgres$coefficients)
+    print(coef)
+    tune$MSE[i] <- mean((coef(fit) - lgres$coefficients)^2)
+    print(mean((coef - lgres$coefficients)^2))
+    print(tune[i,])
+    i=i+1
+    }
+}
+# print(tune)
+```
+
+\noindent We obtained the coefficients estimated from training set and predict the binary outcome on testing. The accuracy of our gradient descend algorithm is around 0.851. 
 
 
-```{r}
-
-
-
+```{r,eval=FALSE}
+b=128
+lr=0.01
+lgres.train = SGD_logistic(y.train,X.train, batch_size = b, learning_rate = lr, epsilon = 1e-4, max_iter = 50000)
+coef.train = lgres.train$coefficients
+X.intercept.test = cbind(1,X.test)
+prob = exp(X.intercept.test %*% coef.train) / (1+ exp(X.intercept.test %*% coef.train))
+y.pred = ifelse(prob >= 0.5,1,0)
+acurracy = sum(1*(y.test == y.pred)) / length(y.test)
+print(acurracy)
 ```
 
 ## Machine Learning approaches
