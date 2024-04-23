@@ -2,6 +2,16 @@
 title: "BIOS 735 Final Project"
 author: "Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{amsthm}
+  - \usepackage{amsmath}
+  - \usepackage{amsfonts}
+  - \usepackage{amscd}
+  - \usepackage{amssymb}
 output:
   html_document:
     theme: flatly
@@ -61,7 +71,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor 
 
 ```{r}
 library()
-
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(dplyr)
 ```
 
 ## Data Splitting and Setup
@@ -98,7 +111,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor 
 ## Likelihood Approach
 ### Generalized Linear Model
 
-\noindent  Let $p = P(Y=1|X)$. Since our response variable is binary, we fit a logistic  model on the dataset. We use the logit link. 
+\noindent  Let $p_i = P(Y_i=1|\mathbf{x_i^T)}$. Since our response variable is binary, we fit a logistic  model on the dataset. We use the logit link. 
 
 $$logit(p_i) = log(\frac{p_i}{1-p_i}) =  \beta_0 + \beta_1x_{i1} + \dots + \beta_px_{ip} = \mathbf{x_i^T} \beta$$
 
@@ -119,7 +132,7 @@ We chose to use mini-batch stochastic gradient descent to find the solution for 
 
 1. Initialize the estimate for $\beta$.
 2. At each iteration, select a mini-batch of size $\alpha$ from $X^T$, denoted $\{\mathbf{x_i^T}\}$, where $i$ indexes the randomly selected rows.
-3. Calculate the gradient of the log-likelihood, $\nabla J(\beta)$, using the mini-batch sample.
+3. Calculate the gradient of the negative log-likelihood, $\nabla J(\beta)$, using the mini-batch sample.
 4. Update $\beta$ according to the rule: $\beta_{\text{new}} = \beta_{\text{old}} - \eta \nabla J(\beta)$, where $\eta$ is the learning rate.
 5. Repeat steps 2-4 until convergence, defined as $|\beta_{\text{new}} - \beta_{\text{old}}| < \epsilon$, where $\epsilon$ is a pre-specified threshold.
 
@@ -138,12 +151,23 @@ $$\nabla J(\beta)^T = [ \frac{\partial J(\beta)}{\partial \beta_0} \ldots \frac{
 
 \noindent We initialized \(\beta\) as the zero vector at the start of the algorithm and continued iterations until convergence. Convergence was defined by the condition \( \left| \beta_{\text{new}} - \beta_{\text{old}} \right| < \epsilon \), where \(\epsilon = 10^{-4}\).
 
-\noindent First we conducted simulation for our algorithm. We generate 100k observations with 20 covariates from normal distribution. Since our our data has non-negative covariates values, we take the absolute value of all covariates. Then we generated the coefficients to be 0.5 or -0.5, and outcome is calculated by a logistic regression model with logit link. We chose a proper mini-batch size ($\alpha$) to be 128 and and the learning rate ($\eta$) to be 0.001. The algorithm converged after 962 iterations and we observed that the mean square error (MSE) between coefficients estimates by our algorithm and the coefficients estimated by GLM is only $8 * 10^{-6}$, which indicate that our algorithm can perform as well as GLM.
+\noindent First, we verified that our SGD algorithm functioned correctly through simulation. We generated 100,000 observations with 20 covariates, each drawn from a normal distribution:
+
+$$X_i \sim \mathcal{N}(0, 1) \text{ for } i = 1, \ldots, 20$$
+
+Given that our dataset contains only non-negative covariate values, we transformed all covariates by taking their absolute value:
+
+$$X_{i, \text{new}} = \left| X_i \right|$$
+
+We then assigned the coefficients a value of 0.5 or -0.5, and the outcomes were calculated using a logistic regression model with a logit link function:
+
+$$\text{logit}(p_i) = \log\left(\frac{p_i}{1-p_i}\right) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} = \mathbf{x_i}^T \beta$$
+
+where $\beta_0 = -0.5$, $\beta_j = 0.5$ for $j = 1, \ldots, 10$, and $\beta_j = -0.5$ for $j = 11, \ldots, 20$.
+
+The mini-batch size ($\alpha$) was set to 128, and the learning rate ($\eta$) was set to 0.001. The algorithm converged after 962 iterations, and we observed that the mean square error (MSE) between the coefficient estimates produced by our algorithm and those estimated by the GLM was only $8 \times 10^{-6}$, indicating that our algorithm performs comparably to the GLM.
 
 ```{r, eval=FALSE}
-library(data.table)
-library(dplyr)
-
 # Conduct simulation
 set.seed(123)
 n=1e5
@@ -162,22 +186,24 @@ cat("MSE with true beta: ",mean((lg.sim$coefficients - beta.sim)^2))
 cat("MSE with GLM estimates: ",mean((lg.sim$coefficients - coef(fit.sim))^2))
 ```
 
-\noindent Further, we apply our algorithm on the phishing dataset. First we split our phishing dataset to training (80%) and testing (20%). Then we optimized both the mini-batch size ($\alpha$) and the learning rate ($\eta$), selecting the best hyperparameters based on convergence speed and Mean Squared Error (MSE) on training set. Here, MSE was calculated as the squared differences between the parameter estimates obtained by our method and those provided by the General Linear Model (GLM) function in the \textbf{stats} package in R. Based on MSE, we chose batch size = 128 and learning rate = 0.01 for our final model. 
+\noindent Next, we applied the SGD algorithm to the phishing dataset, carefully tuning the mini-batch size ($\alpha$) and learning rate ($\eta$) to optimize performance. We selected the optimal hyperparameters ($\alpha, \eta$) by evaluating both the convergence speed and the MSE on the training set. MSE was computed as the squared differences between the parameter estimates derived from our algorithm and those generated by the General Linear Model (GLM) function from the \textbf{stats} package in R. We chose a mini-batch size ($\alpha$) of 128 and a learning rate ($\eta$) of 0.01 for our final model. 
 
-| batch size | learning rate | iteration | MSE       |
-|------------|---------------|-----------|-----------|
-| 32         | 0.01          | 14582     | 3.05294096|
-| 32         | 0.001         | 9643      | 0.19290544|
-| 32         | 0.0001        | 11364     | 1.12656500|
-| 64         | 0.01          | 15856     | 0.64438685|
-| 64         | 0.001         | 10476     | 0.36867774|
-| 64         | 0.0001        | 10829     | 1.54867577|
-| 128        | 0.01          | 9864      | 0.02094163|
-| 128        | 0.001         | 10795     | 0.65899539|
-| 128        | 0.0001        | 10415     | 1.91463586|
-| 256        | 0.01          | 9513      | 0.12832514|
-| 256        | 0.001         | 11118     | 1.00933585|
-| 256        | 0.0001        | 11120     | 2.16481173|
+```{r}
+# Create a data frame 
+data <- data.frame(
+  `batch size` = c(32, 32, 32, 64, 64, 64, 128, 128, 128, 256, 256, 256),
+  `learning rate` = c(0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001),
+  `iteration` = c(14582, 9643, 11364, 15856, 10476, 10829, 9864, 10795, 10415, 9513, 11118, 11120),
+  `MSE` = c(3.05294096, 0.19290544, 1.12656500, 0.64438685, 0.36867774, 1.54867577, 0.02094163, 0.65899539, 1.91463586, 0.12832514, 1.00933585, 2.16481173)
+)
+
+# Create the table
+comparison <- kable(data, format = "html", table.attr = "style='width:100%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Print
+comparison
+```
 
 ```{r, eval=FALSE}
 # split into training and testing
@@ -217,8 +243,7 @@ for (b in c(32,64,128,256)){
 # print(tune)
 ```
 
-\noindent We obtained the coefficients estimated from training set and predict the binary outcome on testing. The accuracy of our gradient descend algorithm is around 0.851. 
-
+\noindent We obtained the estimated coefficients from the training set and used them to predict the binary outcome on the test set. The predictive accuracy of our gradient descent algorithm is approximately 0.851.
 
 ```{r,eval=FALSE}
 b=128
@@ -258,6 +283,18 @@ print(acurracy)
 ## Limitations of this project
 
 ## Future work
+
+## Citations
+
+GLM: 
+
+1. https://web.stanford.edu/~jurafsky/slp3/5.pdf 
+
+2. https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm 
+
+3. https://www.analyticsvidhya.com/blog/2021/08/conceptual-understanding-of-logistic-regression-for-data-science-beginners/ 
+
+4. https://rpubs.com/enwuliu/1011024 
 
 # Apendices
 
