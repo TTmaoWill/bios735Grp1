@@ -2243,8 +2243,13 @@ coef.train = lgres.train$coefficients
 X.intercept.test = cbind(1,X.test)
 prob = exp(X.intercept.test %*% coef.train) / (1+ exp(X.intercept.test %*% coef.train))
 y.pred = ifelse(prob &gt;= 0.5,1,0)
-acurracy = sum(1*(y.test == y.pred)) / length(y.test)
-print(acurracy)</code></pre>
+accuracy = sum(1*(y.test == y.pred)) / length(y.test)
+cat(&quot;Accuracy:&quot;,acurracy)
+
+library(caret)
+conf_matrix = confusionMatrix(as.factor(y.pred), as.factor(y.test))
+f1_score = conf_matrix$byClass[&#39;F1&#39;]
+cat(&quot;F1 score:&quot;,f1_score)</code></pre>
 </div>
 </div>
 <div id="machine-learning-approaches" class="section level2">
