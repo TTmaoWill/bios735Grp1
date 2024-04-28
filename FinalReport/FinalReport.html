@@ -11,7 +11,7 @@
 
 <meta name="author" content="Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan, Jiawen Du" />
 
-<meta name="date" content="2024-04-25" />
+<meta name="date" content="2024-04-28" />
 
 <title>BIOS 735 Final Project</title>
 
@@ -1295,6 +1295,83 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
+  rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
+        .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
+        .attr('aria-expanded', showThis)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // show the div if necessary
+    if (showThis) div.collapse('show');
+
+    // update state of button on show/hide
+    //   * Change text
+    //   * add a class for intermediate states styling
+    div.on('hide.bs.collapse', function () {
+      showCodeText.text('Show');
+      showCodeButton.addClass('btn-collapsing');
+    });
+    div.on('hidden.bs.collapse', function () {
+      showCodeButton.removeClass('btn-collapsing');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+      showCodeButton.addClass('btn-expanding');
+    });
+    div.on('shown.bs.collapse', function () {
+      showCodeButton.removeClass('btn-expanding');
+    });
+
+  });
+
+}
+</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -1642,6 +1719,9 @@ display: none;
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -1719,13 +1799,21 @@ border-radius: 0px;
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">BIOS 735 Final Project</h1>
 <h3 class="subtitle">Group 1</h3>
 <h4 class="author">Madhuri Raman, Will Tang, Xuejun Sun, Sophie Shan,
 Jiawen Du</h4>
-<h4 class="date">04/25/2024</h4>
+<h4 class="date">04/28/2024</h4>
 
 </div>
 
@@ -1759,7 +1847,7 @@ judging whether the link is phishing or not.</p>
 (linked <a href="https://www.kaggle.com/datasets/danielfernandon/web-page-phishing-dataset">here</a>)
 which contains 100,007 website URLs, 19 features of these URLs, and an
 indicator (0 or 1) of whether the URL is a phishing website or not. The
-19 features are characteristics of each URL and includes:</p>
+19 features are characteristics of each URL and include:</p>
 <ul>
 <li>url length</li>
 <li>number of dots in the URL</li>
@@ -1852,7 +1940,7 @@ library(dplyr)</code></pre>
 </div>
 <div id="data-splitting-and-setup" class="section level2">
 <h2>Data Splitting and Setup</h2>
-<p>We first split out dataset into a training (80%) and test set (20%).
+<p>We first split our dataset into a training (80%) and test set (20%).
 Suppose our training set has <span class="math inline">\(n\)</span>
 datapoints. Then:</p>
 <p>Let <span class="math inline">\(Y\)</span> be the <span class="math inline">\(n \times 1\)</span> response vector: <span class="math display">\[ Y_i =
@@ -2315,22 +2403,37 @@ cat(&quot;F1 score:&quot;,f1_score)</code></pre>
 </div>
 </div>
 </div>
-<div id="final-predictions-on-test-set-to-choose-best-model" class="section level1">
-<h1>Final predictions on test set (to “choose” best model)</h1>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<div id="final-model-comparison" class="section level2">
+<h2>Final Model Comparison</h2>
+<p>Compare Final predictions on test set (to “choose” best model)</p>
 </div>
-<div id="conclusion" class="section level1">
-<h1>Conclusion</h1>
-<div id="general-thoughts" class="section level2">
-<h2>General thoughts</h2>
+<div id="limitations-and-future-work" class="section level2">
+<h2>Limitations and Future Work</h2>
+<p>Although this project was fairly straightforward in terms of data
+cleanliness and modeling the classification problem, there were several
+limitation that we encountered which can motivate future work on this
+project. First, the data set is anonymized which means the raw URLs are
+not provided; only the character count features of each URL are given.
+This limits the analysis, visualizations, and feature engineering
+potential. If we had the raw URLs for each website, then we could
+definitely consider applying deep learning methods to classify the URLs
+themselves, rather than just use the character count features. In
+addition, we could feature engineer our own features of interest that
+were not contained in the original data, such as ratio of alphanumeric
+characters to symbols or capital letters, and we would not necessarily
+need to be restricted to sparse zero-inflated Poisson counts as
+covariates. This sparsity in the original data also created difficulty
+with convergence of mini-batch stochastic gradient for the GLM, so the
+sparsest covariates (&gt;99% sparse) had to be pre-filtered from the
+model. Finally, we could consider trying more complex GLMs to compare to
+the machine learning methods, such as GLMs with interaction terms or
+different link functions.</p>
 </div>
-<div id="limitations-of-this-project" class="section level2">
-<h2>Limitations of this project</h2>
 </div>
-<div id="future-work" class="section level2">
-<h2>Future work</h2>
-</div>
-<div id="citations" class="section level2">
-<h2>Citations</h2>
+<div id="references" class="section level1">
+<h1>References</h1>
 <p>GLM:</p>
 <ol style="list-style-type: decimal">
 <li><p><a href="https://web.stanford.edu/~jurafsky/slp3/5.pdf" class="uri">https://web.stanford.edu/~jurafsky/slp3/5.pdf</a></p></li>
@@ -2338,7 +2441,6 @@ cat(&quot;F1 score:&quot;,f1_score)</code></pre>
 <li><p><a href="https://www.analyticsvidhya.com/blog/2021/08/conceptual-understanding-of-logistic-regression-for-data-science-beginners/" class="uri">https://www.analyticsvidhya.com/blog/2021/08/conceptual-understanding-of-logistic-regression-for-data-science-beginners/</a></p></li>
 <li><p><a href="https://rpubs.com/enwuliu/1011024" class="uri">https://rpubs.com/enwuliu/1011024</a></p></li>
 </ol>
-</div>
 </div>
 <div id="apendices" class="section level1">
 <h1>Apendices</h1>
@@ -2421,6 +2523,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

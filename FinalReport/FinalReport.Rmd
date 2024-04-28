@@ -18,7 +18,8 @@ output:
     toc: yes
     toc_float:
       collapsed: yes
-    keep_tex: yes 
+    keep_tex: yes
+    code_folding: hide 
 subtitle: Group 1
 ---
 
@@ -283,23 +284,18 @@ cat("F1 score:",f1_score)
 
 ```
 
-# Final predictions on test set (to "choose" best model)
+# Discussion
 
-```{r}
+## Final Model Comparison
+
+Compare Final predictions on test set (to "choose" best model)
+
+## Limitations and Future Work
+
+Although this project was fairly straightforward in terms of data cleanliness and modeling the classification problem, there were several limitation that we encountered which can motivate future work on this project. First, the data set is anonymized which means the raw URLs are not provided; only the character count features of each URL are given. This limits the analysis, visualizations, and feature engineering potential. If we had the raw URLs for each website, then we could definitely consider applying deep learning methods to classify the URLs themselves, rather than just use the character count features. In addition, we could feature engineer our own features of interest that were not contained in the original data, such as ratio of alphanumeric characters to symbols or capital letters, and we would not necessarily need to be restricted to sparse zero-inflated Poisson counts as covariates. This sparsity in the original data also created difficulty with convergence of mini-batch stochastic gradient for the GLM, so the sparsest covariates (>99% sparse) had to be pre-filtered from the model. Finally, we could consider trying more complex GLMs to compare to the machine learning methods, such as GLMs with interaction terms or different link functions. 
 
 
-
-```
-
-# Conclusion
-
-## General thoughts
-
-## Limitations of this project
-
-## Future work
-
-## Citations
+# References
 
 GLM: 
 
