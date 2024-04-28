@@ -47,40 +47,72 @@ In order to achieve these goals, we work with a data set from Kaggle (linked [he
 
 etc. Below we conduct exploratory data analysis to examine the univariate and bivariate distributions of the features and response variable (indicator of phishing).
 
-### EDA
+## Exploratory Data Analysis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-#### Sparsity
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-#### Missingness?
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi iyean blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-#### Visualize distributions, correlations, outliers
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-##### Histograms, corrplots, PCA
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-
-#### Preview of Final Data
-
-```{r}
-library()
+```{r, message=FALSE, warning=FALSE}
 library(knitr)
 library(kableExtra)
 library(data.table)
+library(tidyverse)
 library(dplyr)
 ```
 
+
+### Data Cleanliness
+
+There are no missing values in the original data set. The data is clean and complete as sourced and required no pre-processing. Additionally, since nearly the features are all counts (with extreme sparsity), no standardization of the covariates was performed before data splitting or modeling.
+
+### Sparsity
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+knitr::include_graphics("figures/sparsity_table.png")
+```
+
+due to sparsity it was unnecessary to look at histograms of each variable...
+
+
+### PCA, Outliers, and Correlation
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+knitr::include_graphics("figures/pcaplot.png")
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+knitr::include_graphics("figures/by_url_length.png")
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+knitr::include_graphics("figures/corrplot.png")
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+
 ## Data Splitting and Setup
 
-\noindent We first split our dataset into a training (80\%) and test set (20\%). Suppose our training set has $n$ datapoints. Then: 
+\noindent We first split our dataset into a training (80\%) and test set (20\%). 
+
+# Packaging
+
+
+Insert info about package and functions
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+
+
+# Methods
+## Likelihood Approach
+### Generalized Linear Model
+
+Suppose our training set has $n$ datapoints. Then: 
 
 \noindent Let $Y$ be the $n \times 1$ response vector:
 $$ Y_i = 
@@ -98,19 +130,6 @@ $$ Y_i =
 1 & x_{n1} & \cdots & x_{np} \\
 \end{bmatrix}
 \]
-
-We use the above framework for the following data analysis, both for the likelihood-based method and machine learning methods.
-
-# Packaging
-
-Insert info about package and functions
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
-
-
-# Methods
-## Likelihood Approach
-### Generalized Linear Model
 
 \noindent  Let $p_i = P(Y_i=1|\mathbf{x_i^T)}$. Since our response variable is binary, we fit a logistic  model on the dataset. We use the logit link. 
 
