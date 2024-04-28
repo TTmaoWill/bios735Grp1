@@ -36,7 +36,7 @@ The goal of this project is to be able to predict whether or not a website link 
 
 ## Data
 
-In order to achieve these goals, we work with a data set from Kaggle (linked [here](https://www.kaggle.com/datasets/danielfernandon/web-page-phishing-dataset)) which contains 100,007 website URLs, 19 features of these URLs, and an indicator (0 or 1) of whether the URL is a phishing website or not. The 19 features are characteristics of each URL and include: 
+In order to achieve these goals, we work with a data set from Kaggle (linked [here](https://www.kaggle.com/datasets/danielfernandon/web-page-phishing-dataset)) which contains 100,007 website URLs, 19 features of these URLs, and an indicator (0 or 1) of whether the URL is a phishing website or not. The 19 features are count characteristics of each URL, including: 
 
 * url length
 * number of dots in the URL
@@ -45,7 +45,7 @@ In order to achieve these goals, we work with a data set from Kaggle (linked [he
 * number of "+" characters in the URL
 * number of redirections (number of times the URL redirects you to another website)
 
-etc. Below we conduct exploratory data analysis to examine the univariate and bivariate distributions of the features and response variable (indicator of phishing).
+Below we conduct exploratory data analysis to examine the univariate and bivariate distributions of the features and response variable (indicator of phishing).
 
 ## Exploratory Data Analysis
 
