@@ -296,6 +296,46 @@ cat("F1 score:",f1_score)
 
 ### Random Forest
 
+We utilized Random Forest implemented in R Package Ranger to construct our classification
+model, same as the GLM approach, the training
+set with 80% samples were used for hyperparameter tuning as well as final model training,
+which was then applied on the held-out test set for performance evaluation. 
+
+### Full Model
+
+For the full model, all the 19 features were included for classification. For hyperparameter
+tunning, We used Caret to conduct 5-fold Cross Validation For tuning parameter
+grids, We considered the following combinations:
+
+```{r}
+parameters <- c("mtry", "min.node.size", "splitrule", "num.trees")
+ranges <- c("c(2,10,19)", "c(1,5)", "c('gini', 'extratree')", "c(5,50,500)")
+
+definitions <- c(
+  "Number of variables sampled as candidates",
+  "Minimal node size to split at",
+  "Split to minimize gini decrease vs splits nodes by choosing cut-points fully at random",
+  "Number of trees to be ensembled"
+)
+
+param_df <- data.frame(
+  parameter = parameters, 
+  range = ranges, 
+  definition = definitions
+)
+
+kable(param_df, format = "html", table.attr = "style='width:100%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+We used Kappa to select the best model. From the following cross validation result, we decided that the optimal paramter combination is `mtry = 10, min.node.size = 5, splitrule='gini',num.trees=50`.
+
+```{r}
+knitr::include_graphics('figures/rf_full_cv.jpg')
+```
+
+
+
 ### Support Vector Machines
 ```{r}
 
