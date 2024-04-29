@@ -235,10 +235,10 @@ cat("MSE with true beta: ",mean((lg.sim$coefficients - beta.sim)^2))
 cat("MSE with GLM estimates: ",mean((lg.sim$coefficients - coef(fit.sim))^2))
 ```
 
-\noindent Next, we applied the SGD algorithm to the phishing dataset, carefully tuning the mini-batch size ($\eta$) and learning rate ($\alpha$) to optimize performance. We removed the covariates that had more than 99\% missing data: $\textit{n_exclamation}, \textit{n_space}, \textit{n_tilde}, \textit{n_comma}, \textit{n_plus}, \textit{n_asterisk}, \textit{n_hashtag}, \textit{n_dollar}$. These variables were so sparse that we believed including them in the model would not be beneficial. We selected the optimal hyperparameters ($\alpha, \eta$) by evaluating the convergence speed, accuracy and F1 score. Overall, we chose a mini-batch size ($\alpha$) of 64 and a learning rate ($\eta$) of 0.001 for our final model. 
+\noindent Next, we applied the SGD algorithm to the phishing dataset, carefully tuning the mini-batch size ($\eta$) and learning rate ($\alpha$) to optimize performance. We removed the covariates that had more than 99\% missing data: $\textit{n_exclamation}, \textit{n_space}, \textit{n_tilde}, \textit{n_comma}, \textit{n_plus}, \textit{n_asterisk}, \textit{n_hashtag}, \textit{n_dollar}$. These variables were so sparse that we believed including them in the model would not be beneficial. We selected the optimal hyperparameters ($\alpha, \eta$) by evaluating the convergence speed, and Kappa. Overall, we chose a mini-batch size ($\alpha$) of 256 and a learning rate ($\eta$) of 0.01 for our final model, since this model has the best Kappa as well as good convergence speed. The accuracy and F1 score of our final model is 0.859 and 0.853, respectively.
 
 ```{r, eval=FALSE}
-### tune parameters, no need to run when compiling report because of time-consuming ###
+### tune parameters, NO NEED to run when compiling report because of time-consuming ###
 
 # read training and testing set
 y.train = fread("derived_data/train_y.csv") %>% unlist() %>% as.vector()
@@ -270,6 +270,9 @@ for (b in c(32,64,128,256)){
     f1_score = conf_matrix$byClass['F1']
     cat("F1 score:",f1_score)
     tune$F1_score[i] = f1_score
+    kappa = kappa2(data.frame(observed = y.test, predicted = y.pred))$value
+    cat("Kappa:", kappa)
+    tune$Kappa[i] = kappa
     i=i+1
     }
 }
@@ -282,7 +285,8 @@ compare = data.frame(
   learning_rate = c(0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001, 0.01, 0.001, 0.0001),
   iteration = c(14582, 9643, 11364, 15856, 10476, 10829, 9864, 10795, 10415, 9513, 11118, 11120),
   Accuracy = c(0.8500125, 0.8534599, 0.8565576, 0.8464152, 0.8577067, 0.8561079, 0.8584562, 0.8583562, 0.8578066, 0.8593555, 0.8568574, 0.8564577),
-  F1_Score = c(0.8900608, 0.8918949, 0.8931721, 0.8887924, 0.8937393, 0.8930640, 0.8924164, 0.8928855, 0.8936870, 0.8926023, 0.8932842, 0.8930738)
+  F1_Score = c(0.8900608, 0.8918949, 0.8931721, 0.8887924, 0.8937393, 0.8930640, 0.8924164, 0.8928855, 0.8936870, 0.8926023, 0.8932842, 0.8930738),
+  Kappa = c(0.6571370, 0.6668623, 0.6765103, 0.6451411, 0.6798314, 0.6749178, 0.6861028, 0.6845838, 0.6803748, 0.6892609, 0.6774683, 0.6763456)
 )
 
 # Create the table
@@ -296,6 +300,8 @@ comparison
 \noindent We obtained the estimated coefficients from the training set and used them to predict the binary outcome on the test set. The predictive accuracy of our gradient descent algorithm is approximately 0.858 and F1 score is approximately 0.894.
 
 ```{r,eval=FALSE}
+## NO NEED to run in knitting to final report##
+
 # read training and testing set
 y.train = fread("derived_data/train_y.csv") %>% unlist() %>% as.vector()
 X.train = fread("derived_data/train_x.csv") %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
@@ -366,6 +372,7 @@ knitr::include_graphics('figures/rf_full_cv.jpg')
 
 
 ### Support Vector Machines
+
 ```{r}
 
 
