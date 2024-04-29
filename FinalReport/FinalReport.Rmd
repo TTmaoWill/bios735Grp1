@@ -64,48 +64,77 @@ There are no missing values in the original data set. The data is clean and comp
 
 ### Sparsity
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+Because most of the features in this data are count variables, we are curious about how much sparsity (zero counts) are in the data. In Figure 1 below, we see the percentage of each column that has zero values. There is extreme sparsity in many of the covariates and there are eight covariates highlighted in yellow for which there is over 99% sparsity, or over 99% of zero values. Although we have 100,000 rows of observations, this sparsity heavily restricts the amount of actual data we have to work with for future model fitting. Due to this sparsity, it was unnecessary to further look at individual histograms or distributions of each variable, as they would be very skewed and unreadable. In addition, this sparsity was so extreme that log-transformations or standardization of covariates would not be helpful or sensible for model fitting. The lack of data mentioned earlier is the reason why we choose to model the response against all covariates whenever possible, before considering variable importance. 
 
-```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+```{r, echo=FALSE, fig.cap="Figure 1.", fig.align="center"}
 knitr::include_graphics("figures/sparsity_table.png")
 ```
 
-due to sparsity it was unnecessary to look at histograms of each variable...
-
+We also see that the response variable `phishing` does not have extreme sparsity. In fact, the roughly 70/30 split of class labels does not even warrant adjusting for class imbalance in the model. 
 
 ### PCA, Outliers, and Correlation
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+We conduct PCA on all the features to get an introductory feel for the most important dimensions of the data. We plot PC1 vs. PC2 in Figure 2 below and color each point based on the true response labels indicating phishing or not. We see that there is some good separation between the classes in the bottom right section of the plot, which shows there is definitely a potential decision boundary that we can find with our future models. 
 
-```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+```{r, echo=FALSE, fig.cap="Figure 2.", fig.align="center"}
 knitr::include_graphics("figures/pcaplot.png")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+There is also a notable outlier circled at the top left of the plot in Figure 2. When we sort the data by decreasing URL length in Figure 3, we notice that there is an extreme value of URL length (4165) that is much larger than every other URL length. Perhaps this observation is the outlier in the PCA plot. However, it is definitely possible that a large URL length implies large counts of other character covariates, by nature, so it is possible that another column is actually motivating the outlier. 
 
-```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+
+```{r, echo=FALSE, fig.cap="Figure 3.", fig.align="center"}
 knitr::include_graphics("figures/by_url_length.png")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+We investigate this natural correlation between columns in this data by constructing a correlation plot, given in Figure 4 below. Here, we see that URL length is actually not strongly correlated with any other variables in the data, contrary to our previous expectation, so that outlier in the PCA plot is likely the extreme URL length observation. Other than one strong positive correlation of 0.9 between number of &s and number of =s, there is no other strong evidence of collinearity between covariates. Also, there are no strong correlations between the response `phishing` and any covariates; there is a correlation of 0.6 with number of /s, but otherwise nothing too notable or impactful for future model fitting.
 
-```{r, echo=FALSE, fig.cap="my caption", fig.align="center"}
+```{r, echo=FALSE, fig.cap="Figure 4.", fig.align="center"}
 knitr::include_graphics("figures/corrplot.png")
 ```
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
 
 
 ## Data Splitting and Setup
 
-\noindent We first split our dataset into a training (80\%) and test set (20\%). 
+We split our full data set without any pre-processing into a training set with 80\% of data and test set with 20\% of data. Note that the test set was only used to compare the performance of all tuned models at the end. 
 
 # Packaging
 
 
-Insert info about package and functions
+All code and data for this project can be found in our R package `phishing735`. This package contains the following functions. Please refer to associated `roxygen` documentation for more details about each function.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed tortor mauris. Nulla auctor a mi in blandit. Nulla tellus metus, iaculis in ullamcorper et, vulputate ac quam. Aenean nec est lectus. Nullam cursus at lacus ut elementum. Quisque at eros eget nibh auctor pellentesque quis non arcu. Proin tincidunt libero vitae tellus vestibulum rhoncus. Cras blandit condimentum eleifend. Integer ut enim nec elit vulputate maximus. Donec in tellus dui. Donec vel purus sollicitudin, hendrerit augue ac, semper tortor.
+* `phishing_data_checks`
+    * Inputs: none
+    * Outputs: printed messages about intro data checks
+* `phishing_corrs_plot`
+    * Inputs: none
+    * Outputs: ggplot object 
+* `split_phishing_data`
+    * Inputs: none
+    * Outputs: csv files of split data written to derived_data directory
+* `get_data`
+    * Inputs: `name`: a string from {"train_x", "train_y", "test_x", "test_y"}
+    * Outputs: A dataframe for train or test x, a factor of level 0 or 1 for train or test y
+* `confusion_mat`
+    * Inputs: `pred`, `true`, `title`, `file.out`
+    * Outputs: ggplot object
+* `phishing_pca`
+    * Inputs: none
+    * Outputs: ggplot object
+* `run_rf`
+    * Inputs: `k`, `cv`, `mtry`, `min.node.size`, `n_tree`, `seed`, `trimmed_var`, `verbose`, `file`
+    * Outputs: train object from caret for the optimal model
+* `SGD_logistic`
+    * Inputs: `y`, `X`, `batch_size`, `learning_rate`, `epsilon`, `max_iter`
+    * Outputs: List of coefficients and number of iterations
+* `run_svm`
+    * Inputs: **FILL IN** **************************
+    * Outputs: **FILL IN** **************************
+    
+    
+
+    
+
 
 
 # Methods
@@ -347,7 +376,19 @@ knitr::include_graphics('figures/rf_full_cv.jpg')
 
 ## Final Model Comparison
 
-Compare Final predictions on test set (to "choose" best model)
+In the table below, we compare the performance of seven tuned models on classification of the test set observations. These models are:
+
+* Logistic Regression with Mini-Batch Stochastic Gradient Descent
+* Random Forest (Full Model)
+* Random Forest (Reduced Model)
+* Support Vector Machine with Linear Kernel (Full Model)
+* Support Vector Machine with Radial Basis Function Kernel (Full Model)
+* Support Vector Machine with Linear Kernel (Reduced Model)
+* Support Vector Machine with Radial Basis Function Kernel (Reduced Model)
+
+In terms of best Kappa on the test set, these models perform fairly similarly, with the random forest full model very slightly outperforming the random forest reduced model. In terms of training time, the random forest models trained with the `ranger` package in R were clearly the fastest. The SVM models fit with `caret` took extremely long to fit for both the full and reduced models. The GLM we fit from scratch without a built-in function did not take nearly as long as SVM but was still a bit slower than the random forest models. However, it is still comparable in terms of prediction error on the test set, which is good to see.
+
+In choosing a final "best" model, we consider model complexity (Occam's Razor), training time, and prediction performance on the test set by best Kappa. Based on all of these factors, we would choose the Random Forest Reduced Model as the best model performing model in this analysis.
 
 ## Limitations and Future Work
 
