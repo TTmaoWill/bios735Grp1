@@ -380,27 +380,23 @@ plot_rf_cv(rf_full_cv,title='Full Model CV result')
 Using the selected parameters, we fitted the final model on the complete training set and tested its prediction accuracy on the test set, with the confusion matrix as well as performance metrics listed below. The final model achieved Kappa of 0.7669 and F1 score of 0.9163.
 
 ```{r,message=F}
+train_x = get_data('train_x')
+train_y = get_data('train_y')
+test_x = get_data('test_x')
+test_y = get_data('test_y')
 start = Sys.time()
 full <- run_rf(cv=F,mtry=10,splitrule='gini',n_tree=50,min.node.size=5,verbose=T)
 (paste('Training time:',as.numeric(Sys.time()-start)))
 confusion_mat(predict(full,test_x),title="Full model prediction confusion matrix",file.out = "figures/full_model_confusion_mat.jpg")
 
 ```
+
 We then utilized the nature of random forest's capability of variable selection to 
 investigate the relationship between the feature importance (by mean decrease in Gini) and 
 its sparsity. For dense variables, variable importance is not directly correlated to percentage
 of 0, which with why we would need variable selection methods to decide the importance variable
 subset; for sparse variables with over 50% of 0, there seems to be decrease in importance 
 as the sparsity increases, which is reasonable due to reduced amount of information.
-
-
-```{r,message=F}
-start = Sys.time()
-full <- run_rf(cv=F,mtry=10,splitrule='gini',n_tree=50,min.node.size=5,verbose=T)
-(paste('Training time:',as.numeric(Sys.time()-start)))
-confusion_mat(predict(full,test_x),title="Full model prediction confusion matrix",file.out = "figures/full_model_confusion_mat.jpg")
-
-```
 
 ```{r,warning=F}
 library(ranger)
@@ -410,7 +406,8 @@ df <-
     data.frame(importance = importance(full$finalModel),
                percent_of_zero = t(perc_0)[, 1])
 
-df
+kable(df, format = "html", table.attr = "style='width:100%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
 ggplot(df, aes(x = percent_of_zero, y = importance)) +
     theme_bw() +
@@ -428,10 +425,15 @@ greater than 99%. We re-tuned the parameter based on training set the subset of 
 ```{r}
 plot_rf_cv(rf_reduce_cv,title='Reduced Model CV result')
 ```
+
 We fitted the final reduced model with these parameters on the complete training set and tested its prediction accuracy on the test set and listed the confusion matrix as well as performance metrics. The reduced model achieved Kappa of 0.7642 and F1 score of 0.9150. On one hand, there is barely any impact on the prediction performance after removing the 8 extremely sparse features, consistent with their low importance in the full model; on the other hand, training the reduced model takes longer time compared to the full model (since the optimal number of trees were selected as 500 compared to 50). Because of this, we retained both models for the final comparison.
 
 
 ```{r,message=F}
+train_x = get_data('train_x')
+train_y = get_data('train_y')
+test_x = get_data('test_x')
+test_y = get_data('test_y')
 start = Sys.time()
 reduce <- run_rf(cv=F,mtry=6,splitrule='gini',n_tree=500,min.node.size=1,verbose=T,
                      trimmed_var=c('n_exclamation',
