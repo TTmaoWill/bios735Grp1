@@ -23,6 +23,11 @@ output:
 subtitle: Group 1
 ---
 
+To reproduce the report, you need to install package [phishing735](https://github.com/madzraman/phishing735/) first.
+```{r,message=F,warning=F}
+library(phishing735)
+```
+
 # Introduction
 
 In the digital age, phishing is a common practice in which cybercriminals attempt to steal sensitive, personal information from users, such as their usernames/passwords, social-security number, credit card information, etc. Phishing can occur in many different forms, but one common way is through websites. You have probably received suspicious emails before from unknown senders. These emails usually contain phrases to bait your interest and may contain a link to a website that sounds interesting, but really is just collecting your personal information. We want to avoid clicking on phishing links, while also not missing out on important non-phishing links that we need to access. 
@@ -212,10 +217,14 @@ cat("MSE with GLM estimates: ",mean((lg.sim$coefficients - coef(fit.sim))^2))
 ### tune parameters, no need to run when compiling report because of time-consuming ###
 
 # read training and testing set
-y.train = fread("derived_data/train_y.csv") %>% unlist() %>% as.vector()
-X.train = fread("derived_data/train_x.csv") %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
-y.test = fread("derived_data/test_y.csv") %>% unlist() %>% as.vector()
-X.test = fread("derived_data/test_x.csv") %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
+train_x = get_data('train_x')
+train_y = get_data('train_y')
+test_x = get_data('test_x')
+test_y = get_data('test_y')
+y.train = train_y %>% unlist() %>% as.vector()
+X.train = train_x %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
+y.test = test_y %>% unlist() %>% as.vector()
+X.test = test_x %>% select(-n_exclamation, -n_space, -n_tilde, -n_comma, -n_plus, -n_asterisk, -n_hastag, -n_dollar) %>% as.matrix()
 
 tune = as.data.frame(matrix(c(rep(NA,12*5)),ncol=5))
 colnames(tune) = c("batch_size","learning_rate","iteration","Accuracy","F1_score")
@@ -328,13 +337,80 @@ kable(param_df, format = "html", table.attr = "style='width:100%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
 
-We used Kappa to select the best model. From the following cross validation result, we decided that the optimal paramter combination is `mtry = 10, min.node.size = 5, splitrule='gini',num.trees=50`.
+We used Kappa to select the best model. From the following cross validation result, we decided that the optimal parameter combination is `mtry = 10, min.node.size = 5, splitrule='gini',num.trees=50`.
 
 ```{r}
-knitr::include_graphics('figures/rf_full_cv.jpg')
+plot_rf_cv(rf_full_cv,title='Full Model CV result')
+```
+Using the selected parameters, we fitted the final model on the complete training set and tested its prediction accuracy on the test set, with the confusion matrix as well as performance metrics listed below. The final model achieved Kappa of 0.7669 and F1 score of 0.9163.
+
+```{r,message=F}
+start = Sys.time()
+full <- run_rf(cv=F,mtry=10,splitrule='gini',n_tree=50,min.node.size=5,verbose=T)
+(paste('Training time:',as.numeric(Sys.time()-start)))
+confusion_mat(predict(full,test_x),title="Full model prediction confusion matrix",file.out = "figures/full_model_confusion_mat.jpg")
+
+```
+We then utilized the nature of random forest's capability of variable selection to 
+investigate the relationship between the feature importance (by mean decrease in Gini) and 
+its sparsity. For dense variables, variable importance is not directly correlated to percentage
+of 0, which with why we would need variable selection methods to decide the importance variable
+subset; for sparse variables with over 50% of 0, there seems to be decrease in importance 
+as the sparsity increases, which is reasonable due to reduced amount of information.
+
+
+```{r,message=F}
+start = Sys.time()
+full <- run_rf(cv=F,mtry=10,splitrule='gini',n_tree=50,min.node.size=5,verbose=T)
+(paste('Training time:',as.numeric(Sys.time()-start)))
+confusion_mat(predict(full,test_x),title="Full model prediction confusion matrix",file.out = "figures/full_model_confusion_mat.jpg")
+
 ```
 
+```{r,warning=F}
+library(ranger)
+perc_0 <-
+    train_x %>% summarise(across(everything(), ~ mean(.x == 0)))
+df <-
+    data.frame(importance = importance(full$finalModel),
+               percent_of_zero = t(perc_0)[, 1])
 
+df
+
+ggplot(df, aes(x = percent_of_zero, y = importance)) +
+    theme_bw() +
+    geom_point(color = 'blue', size = 2) +
+    geom_line(size = 1) +
+    labs(x = 'Percentage of 0', y = 'Gini importance') +
+    geom_vline(xintercept = 0.99, linetype = 2)
+```
+
+Although random forest model does not suffer from burden of convergence with sparse features,
+we still attempted to fit a reduced model by removing the 8 features with the percentage of 0
+greater than 99%. We re-tuned the parameter based on training set the subset of features via 
+5-fold cross-validation, selecting out the best parameter combination as `mtry = 6, min.node.size = 1, splitrule='gini',num.trees=500`.
+
+```{r}
+plot_rf_cv(rf_reduce_cv,title='Reduced Model CV result')
+```
+We fitted the final reduced model with these parameters on the complete training set and tested its prediction accuracy on the test set and listed the confusion matrix as well as performance metrics. The reduced model achieved Kappa of 0.7642 and F1 score of 0.9150. On one hand, there is barely any impact on the prediction performance after removing the 8 extremely sparse features, consistent with their low importance in the full model; on the other hand, training the reduced model takes longer time compared to the full model (since the optimal number of trees were selected as 500 compared to 50). Because of this, we retained both models for the final comparison.
+
+
+```{r,message=F}
+start = Sys.time()
+reduce <- run_rf(cv=F,mtry=6,splitrule='gini',n_tree=500,min.node.size=1,verbose=T,
+                     trimmed_var=c('n_exclamation',
+                                   'n_plus',
+                                   'n_tilde',
+                                   'n_space',
+                                   'n_comma',
+                                   'n_asterisk',
+                                   'n_dollar',
+                                   'n_hashtag'))
+paste('Training time:',as.numeric(Sys.time()-start))
+confusion_mat(predict(reduce,test_x),title="Reduced model prediction confusion matrix",file.out = "figures/reduced_model_confusion_mat.jpg")
+
+```
 
 ### Support Vector Machines
 ```{r}
