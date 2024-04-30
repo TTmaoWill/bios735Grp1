@@ -23,7 +23,8 @@ output:
 subtitle: Group 1
 ---
 
-To reproduce the report, you need to install package [phishing735](https://github.com/madzraman/phishing735/) first.
+To reproduce the report, you need to install package [phishing735](https://github.com/madzraman/phishing735/) first. See instructions to do so in the README section of the Gihub repository.
+
 ```{r,message=F,warning=F}
 library(phishing735)
 ```
@@ -338,7 +339,7 @@ cat("F1 score:",f1_score)
 
 ## Machine Learning approaches
 
-### Random Forest
+## Random Forest
 
 We utilized Random Forest implemented in R Package Ranger to construct our classification
 model, same as the GLM approach, the training
@@ -417,6 +418,8 @@ ggplot(df, aes(x = percent_of_zero, y = importance)) +
     geom_vline(xintercept = 0.99, linetype = 2)
 ```
 
+### Reduced Model
+
 Although random forest model does not suffer from burden of convergence with sparse features,
 we still attempted to fit a reduced model by removing the 8 features with the percentage of 0
 greater than 99%. We re-tuned the parameter based on training set the subset of features via 
@@ -471,7 +474,13 @@ In the table below, we compare the performance of seven tuned models on classifi
 * Support Vector Machine with Linear Kernel (Reduced Model)
 * Support Vector Machine with Radial Basis Function Kernel (Reduced Model)
 
-In terms of best Kappa on the test set, these models perform fairly similarly, with the random forest full model very slightly outperforming the random forest reduced model. In terms of training time, the random forest models trained with the `ranger` package in R were clearly the fastest. The SVM models fit with `caret` took extremely long to fit for both the full and reduced models. The GLM we fit from scratch without a built-in function did not take nearly as long as SVM but was still a bit slower than the random forest models. However, it is still comparable in terms of prediction error on the test set, which is good to see.
+Although we calculated both Cohen's Kappa and F1 Score for each model (see table below), we tuned each model based on best Cohen's Kappa value. Thus, we use the best Kappa metric to compare the final models' performances on the test set. Note that we calculated F1 Score for each model just to get a sense of accuracy for each, but all tuning and model comparison is based on best Kappa.
+
+```{r, echo=FALSE, fig.cap="Figure 2.", fig.align="center"}
+knitr::include_graphics("figures/modelcomparison.png")
+```
+
+In terms of best Kappa on the test set, these models perform fairly similarly, with the random forest full model very slightly outperforming the random forest reduced model and the SVMs with radial basis function kernel. In terms of training time, the random forest models trained with the `ranger` package in R were clearly the fastest. The SVM models fit with `caret` took extremely long to train for both the full and reduced models, so even though the SVM models with RBF kernel (both full and reduced) performed decently well, we would still not prefer to use them in the future. The GLM we fit from scratch without a built-in R function did not take nearly as long as SVM but was still a bit slower than the random forest models. However, it is still comparable in terms of prediction error on the test set, which is good to see.
 
 In choosing a final "best" model, we consider model complexity (Occam's Razor), training time, and prediction performance on the test set by best Kappa. Based on all of these factors, we would choose the Random Forest Reduced Model as the best model performing model in this analysis.
 
