@@ -462,17 +462,16 @@ After tuning, we chose paramter with highest kappa. For the Linear SVM the optim
  
 
 
-```{r}
+```{r,eval=F}
 library(caret)
-library(irr)
 train_x = get_data('train_x')
 train_y = get_data('train_y')
 test_x = get_data('test_x')
 test_y = get_data('test_y')
-##Run Full model Linear SVM, it takes a while to run
-# run_svm(seed = 111,reduced = F,RBF = F,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
-##Run Full model RBF SVM, do not run, take a long time
-# run_svm(seed = 111,reduced = F,RBF = T,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
+#Run Full model Linear SVM, it takes a while to run
+run_svm(seed = 111,reduced = F,RBF = F,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
+#Run Full model RBF SVM, do not run, take a long time
+run_svm(seed = 111,reduced = F,RBF = T,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
 ```
 
 ```{r, echo=FALSE, fig.align="center"}
@@ -499,11 +498,11 @@ The best performed linear SVM had F1 score 0.894 and Kappa 0.681 on the test. An
 For reduced model,variables with 0 percentage bigger than 99% were excluded for the model fitting. 11 variables left after removing "n_exclamation", "n_plus", "n_tilde", "n_space", "n_comma", "n_asterisk", "n_dollar", "n_hashtag".
 
 
-```{r}
-##Run Reduced model Linear SVM, it takes a while to run
-# run_svm(seed = 111,reduced = T,RBF = F,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
-##Run Reduced model RBF SVM, do not run, take a long time
-# run_svm(seed = 111,reduced = T,RBF = T,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
+```{r,eval=F}
+#Run Reduced model Linear SVM, it takes a while to run
+run_svm(seed = 111,reduced = T,RBF = F,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
+#Run Reduced model RBF SVM, do not run, take a long time
+run_svm(seed = 111,reduced = T,RBF = T,train_x =train_x,test_x = test_x,train_y =train_y,test_y = test_y  )
 ```
 
 Following the same tuning procedure, in the reduced model setting, the optimal C for Linear SVM was 1.71 and the optimal C and Sigma for 1.2 and 1.1.
@@ -550,6 +549,10 @@ GLM:
 3. https://www.analyticsvidhya.com/blog/2021/08/conceptual-understanding-of-logistic-regression-for-data-science-beginners/ 
 
 4. https://rpubs.com/enwuliu/1011024 
+
+RF:
+
+https://doi.org/10.1007/s10994-006-6226-1
 
 # Apendices
 
